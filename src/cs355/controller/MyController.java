@@ -505,13 +505,9 @@ public class MyController extends Observable implements CS355Controller{
 
 	@Override
 	public void openImage(File file) {
-		// TODO Auto-generated method stub
-		System.out.println("Worked");
 		mode = 2;
 		image.open(file);
 		image.getImage();
-		viewPoint.setLocation(768, 768);
-		zoomLevel = 3;
 		setChanged();
 		notifyObservers();
 	}
@@ -570,26 +566,42 @@ public class MyController extends Observable implements CS355Controller{
 
 	@Override
 	public void doUniformBlur() {
-		// TODO Auto-generated method stub
-		
+		if(mode == 2){
+			image.uniformBlur();
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	@Override
 	public void doGrayscale() {
-		// TODO Auto-generated method stub
-		
+		if(mode == 2){
+			image.grayscale();
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	@Override
 	public void doChangeContrast(int contrastAmountNum) {
-		// TODO Auto-generated method stub
-		
+		if(mode == 2){
+			if(contrastAmountNum > 100){contrastAmountNum = 100;}
+			if(contrastAmountNum < -100){contrastAmountNum = -100;}
+			image.contrast(contrastAmountNum);
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	@Override
 	public void doChangeBrightness(int brightnessAmountNum) {
-		// TODO Auto-generated method stub
-		
+		if(mode == 2){
+			if(brightnessAmountNum > 100){brightnessAmountNum = 100;}
+			if(brightnessAmountNum < -100){brightnessAmountNum = -100;}
+			image.brightness(brightnessAmountNum);
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	@Override
