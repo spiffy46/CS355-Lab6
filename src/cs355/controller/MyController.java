@@ -510,6 +510,8 @@ public class MyController extends Observable implements CS355Controller{
 		mode = 2;
 		image.open(file);
 		image.getImage();
+		viewPoint.setLocation(768, 768);
+		zoomLevel = 3;
 		setChanged();
 		notifyObservers();
 	}

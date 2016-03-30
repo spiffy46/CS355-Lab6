@@ -365,7 +365,7 @@ public class MyView implements ViewRefresher{
 		toDrawOn.setTransform(objToWorld);
 		
 		myImage image = controllerUpdate.getImage();
-		toDrawOn.drawImage(image.getImage(), null, (int)controllerUpdate.getViewPoint().getX(), (int)controllerUpdate.getViewPoint().getY());
+		toDrawOn.drawImage(image.getImage(), null, 1024 - image.getWidth()/2, 1024 - image.getHeight()/2);
 	}
 	
 	public void setModel(MyModel model) {
