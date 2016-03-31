@@ -548,20 +548,29 @@ public class MyController extends Observable implements CS355Controller{
 
 	@Override
 	public void doEdgeDetection() {
-		// TODO Auto-generated method stub
-		
+		if(mode == 2){
+			image.edgeDetection();
+			setChanged();
+			notifyObservers();
+		}			
 	}
 
 	@Override
 	public void doSharpen() {
-		// TODO Auto-generated method stub
-		
+		if(mode == 2){
+			image.sharpen();
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	@Override
 	public void doMedianBlur() {
-		// TODO Auto-generated method stub
-		
+		if(mode == 2){
+			image.medianBlur();
+			setChanged();
+			notifyObservers();
+		}		
 	}
 
 	@Override

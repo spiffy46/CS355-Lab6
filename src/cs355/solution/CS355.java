@@ -34,6 +34,8 @@ public class CS355 {
 		GUIFunctions.setHScrollBarMax(2048);
 		GUIFunctions.setVScrollBarMin(0);
 		GUIFunctions.setVScrollBarMax(2048);
+		GUIFunctions.setHScrollBarPosit(768);
+		GUIFunctions.setVScrollBarPosit(768);
 		GUIFunctions.refresh();
 	}
 }
