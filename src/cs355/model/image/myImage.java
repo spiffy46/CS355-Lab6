@@ -23,6 +23,61 @@ public class myImage extends CS355Image {
 	@Override
 	public void edgeDetection() {
 		// TODO Auto-generated method stub
+		int[][] input = {{10,11,9,25,22},
+						{8,10,9,26,28},
+						{9,8,9,24,25},
+						{11,11,12,23,22},
+						{10,11,9,22,25}
+		};
+		float[][] xoutput = {{0,0,0,0,0,},
+				{0,0,0,0,0},
+				{0,0,0,0,0},
+				{0,0,0,0,0},
+				{0,0,0,0,0}
+		};
+		float[][] youtput = {{0,0,0,0,0,},
+				{0,0,0,0,0},
+				{0,0,0,0,0},
+				{0,0,0,0,0},
+				{0,0,0,0,0}
+		};
+		float[][] xmask = {{0,-1,0},{-1,5,-1},{0,-1,0}};
+		float[][] ymask = {{-1,-2,-1},{0,0,0},{1,2,1}};
+		
+		for(int i = 0; i < input.length; i++){
+			for(int j = 0; j < input.length; j++){
+				if(i == 0 || j == 0){
+					xoutput[i][j] = 0;
+					youtput[i][j] = 0;
+				}else if(i == input.length-1 || j == input.length-1){
+					xoutput[i][j] = 0;
+					youtput[i][j] = 0;
+				}else{		
+					float xtmp = 0;
+					float ytmp = 0;
+					for(int x = -1; x <=1; x++){
+						for(int y = -1; y <=1; y++){
+							xtmp += input[i+x][j+y] * xmask[x+1][y+1];
+							//ytmp += input[i+x][j+y] * ymask[x+1][y+1];
+						}
+					}
+					xtmp = xtmp;
+					//ytmp = ytmp/8;
+					
+					
+					float val = (float)Math.sqrt((xtmp * xtmp)+(ytmp * ytmp));
+
+					youtput[i][j] = xtmp;
+					System.out.print(youtput[i][j] + "  ");
+				}
+			}
+			System.out.println();
+		}
+		
+		
+		
+		
+		//End TEST
 		float[][] xKernel = {{-1,0,1},{-2,0,2},{-1,0,1}};
 		float[][] yKernel = {{-1,-2,-1},{0,0,0},{1,2,1}};
 		
@@ -45,8 +100,9 @@ public class myImage extends CS355Image {
 						for(int y = -1; y <=1; y++){
 							getPixel(i+x,j+y,rgb);
 							Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], hsb);
-							newXB += hsb[2] * xKernel[x+1][y+1];
-							newYB += hsb[2] * yKernel[x+1][y+1];
+							
+							newXB += (hsb[2] * 255 * xKernel[x+1][y+1]);
+							newYB += (hsb[2] * 255 * yKernel[x+1][y+1]);
 						}
 					}
 					newXB = newXB / 8;
@@ -54,12 +110,12 @@ public class myImage extends CS355Image {
 					
 					float val = (float)Math.sqrt((newXB * newXB)+(newYB * newYB));
 					
-					int col = (int)(val * 255);
-					System.out.println(col);
-
-					rgb[0] = col;
-					rgb[1] = col;
-					rgb[2] = col;
+					int col = (int)(newYB * 255);
+					col += 128;
+					
+					rgb[0] = (int)val;
+					rgb[1] = (int)val;
+					rgb[2] = (int)val;
 					
 					newImage.setPixel(i,j,rgb);
 				}
@@ -70,57 +126,48 @@ public class myImage extends CS355Image {
 
 	@Override
 	public void sharpen() {
+		//TODO Verify that this works
+		
+		float[][] unSharp = {{0,-.5f,0},{-.5f,3,-.5f},{0,-.5f,0}};
+
+		
 		myImage newImage = new myImage();
 		newImage.setPixels(this);
 		int[] rgb = new int[3];
-		int[] tmp = new int[3];
-
+		
 		for(int i = 0; i < getWidth(); i++) {
-			for(int j = 0; j < getHeight(); j++) {
-				
-				getPixel(i,j,rgb);
-				
+			for(int j = 0; j < getHeight(); j++) {		
 				if(i == 0 || j == 0){
 					newImage.setPixel(i,j,rgb);
 				}else if(i == getWidth()-1 || j == getHeight()-1){
 					newImage.setPixel(i,j,rgb);
 				}else{		
-					int newRed = rgb[0] * 6;
-					int newGreen = rgb[1] * 6;
-					int newBlue = rgb[2] * 6;
-				
-					getPixel(i-1,j,tmp);
-					newRed -= tmp[0];
-					newGreen -= tmp[1];
-					newBlue -= tmp[2];
-					getPixel(i,j-1,tmp);
-					newRed -= tmp[0];
-					newGreen -= tmp[1];
-					newBlue -= tmp[2];
-					getPixel(i+1,j,tmp);
-					newRed -= tmp[0];
-					newGreen -= tmp[1];
-					newBlue -= tmp[2];
-					getPixel(i,j+1,tmp);
-					newRed -= tmp[0];
-					newGreen -= tmp[1];
-					newBlue -= tmp[2];
+					float newR = 0;
+					float newG = 0;
+					float newB = 0;
 					
-					tmp[0] = newRed/2;
-					tmp[1] = newGreen/2;
-					tmp[2] = newBlue/2;
+					for(int x = -1; x <=1; x++){
+						for(int y = -1; y <=1; y++){
+							getPixel(i+x,j+y,rgb);
+							
+							newR += (rgb[0] * unSharp[x+1][y+1]);
+							newG += (rgb[1] * unSharp[x+1][y+1]);
+							newB += (rgb[2] * unSharp[x+1][y+1]);
+						}
+					}
 					
-					if(tmp[0]>255){tmp[0] = 255;}
-					if(tmp[1]>255){tmp[1] = 255;}
-					if(tmp[2]>255){tmp[2] = 255;}
-					if(tmp[0]<0){tmp[0] = 0;}
-					if(tmp[1]<0){tmp[1] = 0;}
-					if(tmp[2]<0){tmp[2] = 0;}
+					if(newR > 255){newR = 255;}
+					if(newG > 255){newG = 255;}
+					if(newB > 255){newB = 255;}
+					if(newR < 0){newR = 0;}
+					if(newG < 0){newG = 0;}
+					if(newB < 0){newB = 0;}
 
-
-					System.out.println("R: " + tmp[0] + " G: " + tmp[1] + " B: " + tmp[2]);
-				
-					newImage.setPixel(i,j,tmp);
+					rgb[0] = (int)newR;
+					rgb[1] = (int)newG;
+					rgb[2] = (int)newB;
+					
+					newImage.setPixel(i,j,rgb);
 				}
 			}
 		}
