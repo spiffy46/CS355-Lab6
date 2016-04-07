@@ -174,7 +174,6 @@ public class myImage extends CS355Image {
 
 	@Override
 	public void medianBlur() {
-		// TODO Auto-generated method stub		
 		myImage newImage = new myImage();
 		newImage.setPixels(this);
 		for(int i = 0; i < getWidth(); i++) {
@@ -204,25 +203,11 @@ public class myImage extends CS355Image {
 					Collections.sort(redList);
 					Collections.sort(greenList);
 					Collections.sort(blueList);
-					int red = redList.get(4);
-					int green = greenList.get(4);
-					int blue = blueList.get(4);
+					rgb[0]= redList.get(4);
+					rgb[1] = greenList.get(4);
+					rgb[2] = blueList.get(4);
 					
-					double min = 500;
-					int[] tmp = new int[3];
-					for(int x = -1; x <=1; x++){
-						for(int y = -1; y <=1; y++){
-							getPixel(i+x,j+y,rgb);
-							
-							double dist = Math.sqrt((red-rgb[0])*(red-rgb[0])+(green-rgb[1])*(green-rgb[1])+(blue-rgb[2])*(blue-rgb[2]));
-							
-							if(dist < min){
-								min = dist;
-								tmp = rgb;
-							}
-						}
-					}
-					newImage.setPixel(i,j,tmp);
+					newImage.setPixel(i,j,rgb);
 				}
 			}
 		}
