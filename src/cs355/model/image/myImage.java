@@ -2,6 +2,8 @@ package cs355.model.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class myImage extends CS355Image {
 
@@ -23,7 +25,7 @@ public class myImage extends CS355Image {
 	@Override
 	public void edgeDetection() {
 		// TODO Auto-generated method stub
-		int[][] input = {{10,11,9,25,22},
+		/*int[][] input = {{10,11,9,25,22},
 						{8,10,9,26,28},
 						{9,8,9,24,25},
 						{11,11,12,23,22},
@@ -72,7 +74,7 @@ public class myImage extends CS355Image {
 				}
 			}
 			System.out.println();
-		}
+		}*/
 		
 		
 		
@@ -101,8 +103,8 @@ public class myImage extends CS355Image {
 							getPixel(i+x,j+y,rgb);
 							Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], hsb);
 							
-							newXB += (hsb[2] * 255 * xKernel[x+1][y+1]);
-							newYB += (hsb[2] * 255 * yKernel[x+1][y+1]);
+							newXB += (hsb[2] * xKernel[y+1][x+1]);
+							newYB += (hsb[2] * yKernel[y+1][x+1]);
 						}
 					}
 					newXB = newXB / 8;
@@ -110,12 +112,11 @@ public class myImage extends CS355Image {
 					
 					float val = (float)Math.sqrt((newXB * newXB)+(newYB * newYB));
 					
-					int col = (int)(newYB * 255);
-					col += 128;
+					int col = (int)(val * 255);
 					
-					rgb[0] = (int)val;
-					rgb[1] = (int)val;
-					rgb[2] = (int)val;
+					rgb[0] = col;
+					rgb[1] = col;
+					rgb[2] = col;
 					
 					newImage.setPixel(i,j,rgb);
 				}
@@ -125,11 +126,8 @@ public class myImage extends CS355Image {
 	}
 
 	@Override
-	public void sharpen() {
-		//TODO Verify that this works
-		
+	public void sharpen() {		
 		float[][] unSharp = {{0,-.5f,0},{-.5f,3,-.5f},{0,-.5f,0}};
-
 		
 		myImage newImage = new myImage();
 		newImage.setPixels(this);
@@ -176,8 +174,59 @@ public class myImage extends CS355Image {
 
 	@Override
 	public void medianBlur() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
+		myImage newImage = new myImage();
+		newImage.setPixels(this);
+		for(int i = 0; i < getWidth(); i++) {
+			for(int j = 0; j < getHeight(); j++) {
+				
+				int[] rgb = new int[3];
+				getPixel(i,j,rgb);
+				
+				if(i == 0 || j == 0){
+					newImage.setPixel(i,j,rgb);
+				}else if(i == getWidth()-1 || j == getHeight()-1){
+					newImage.setPixel(i,j,rgb);
+				}else{								
+					ArrayList<Integer> redList = new ArrayList<Integer>();
+					ArrayList<Integer> greenList = new ArrayList<Integer>();
+					ArrayList<Integer> blueList = new ArrayList<Integer>();
+				
+					for(int x = -1; x <=1; x++){
+						for(int y = -1; y <=1; y++){
+							getPixel(i+x,j+y,rgb);
+							redList.add(rgb[0]);
+							greenList.add(rgb[1]);
+							blueList.add(rgb[2]);
+						}
+					}
+					
+					Collections.sort(redList);
+					Collections.sort(greenList);
+					Collections.sort(blueList);
+					int red = redList.get(4);
+					int green = greenList.get(4);
+					int blue = blueList.get(4);
+					
+					double min = 500;
+					int[] tmp = new int[3];
+					for(int x = -1; x <=1; x++){
+						for(int y = -1; y <=1; y++){
+							getPixel(i+x,j+y,rgb);
+							
+							double dist = Math.sqrt((red-rgb[0])*(red-rgb[0])+(green-rgb[1])*(green-rgb[1])+(blue-rgb[2])*(blue-rgb[2]));
+							
+							if(dist < min){
+								min = dist;
+								tmp = rgb;
+							}
+						}
+					}
+					newImage.setPixel(i,j,tmp);
+				}
+			}
+		}
+		setPixels(newImage);
 	}
 
 	@Override
