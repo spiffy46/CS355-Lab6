@@ -7,7 +7,14 @@ import java.util.Collections;
 
 public class myImage extends CS355Image {
 
+	public myImage() {
+		super();
+	}
 	
+	public myImage(int width, int height) {
+		super(width,height);
+	}
+
 	@Override
 	public BufferedImage getImage() {
 		BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_3BYTE_BGR);
@@ -24,101 +31,45 @@ public class myImage extends CS355Image {
 
 	@Override
 	public void edgeDetection() {
-		// TODO Auto-generated method stub
-		/*int[][] input = {{10,11,9,25,22},
-						{8,10,9,26,28},
-						{9,8,9,24,25},
-						{11,11,12,23,22},
-						{10,11,9,22,25}
-		};
-		float[][] xoutput = {{0,0,0,0,0,},
-				{0,0,0,0,0},
-				{0,0,0,0,0},
-				{0,0,0,0,0},
-				{0,0,0,0,0}
-		};
-		float[][] youtput = {{0,0,0,0,0,},
-				{0,0,0,0,0},
-				{0,0,0,0,0},
-				{0,0,0,0,0},
-				{0,0,0,0,0}
-		};
-		float[][] xmask = {{0,-1,0},{-1,5,-1},{0,-1,0}};
-		float[][] ymask = {{-1,-2,-1},{0,0,0},{1,2,1}};
-		
-		for(int i = 0; i < input.length; i++){
-			for(int j = 0; j < input.length; j++){
-				if(i == 0 || j == 0){
-					xoutput[i][j] = 0;
-					youtput[i][j] = 0;
-				}else if(i == input.length-1 || j == input.length-1){
-					xoutput[i][j] = 0;
-					youtput[i][j] = 0;
-				}else{		
-					float xtmp = 0;
-					float ytmp = 0;
-					for(int x = -1; x <=1; x++){
-						for(int y = -1; y <=1; y++){
-							xtmp += input[i+x][j+y] * xmask[x+1][y+1];
-							//ytmp += input[i+x][j+y] * ymask[x+1][y+1];
-						}
-					}
-					xtmp = xtmp;
-					//ytmp = ytmp/8;
-					
-					
-					float val = (float)Math.sqrt((xtmp * xtmp)+(ytmp * ytmp));
-
-					youtput[i][j] = xtmp;
-					System.out.print(youtput[i][j] + "  ");
-				}
-			}
-			System.out.println();
-		}*/
-		
-		
-		
-		
-		//End TEST
 		float[][] xKernel = {{-1,0,1},{-2,0,2},{-1,0,1}};
 		float[][] yKernel = {{-1,-2,-1},{0,0,0},{1,2,1}};
 		
-		myImage newImage = new myImage();
-		newImage.setPixels(this);
+		myImage newImage = new myImage(this.getWidth(),this.getHeight());
 		int[] rgb = new int[3];
 		float [] hsb = new float[3];
 
 		for(int i = 0; i < getWidth(); i++) {
 			for(int j = 0; j < getHeight(); j++) {		
 				if(i == 0 || j == 0){
-					newImage.setPixel(i,j,rgb);
+					newImage.setPixel(i,j,new int[3]);
 				}else if(i == getWidth()-1 || j == getHeight()-1){
-					newImage.setPixel(i,j,rgb);
+					newImage.setPixel(i,j,new int[3]);
 				}else{		
 					float newXB = 0;
 					float newYB = 0;
 					
-					for(int x = -1; x <=1; x++){
-						for(int y = -1; y <=1; y++){
+					for(int y = -1; y <=1; y++){
+						for(int x = -1; x <=1; x++){
 							getPixel(i+x,j+y,rgb);
 							Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], hsb);
-							
 							newXB += (hsb[2] * xKernel[y+1][x+1]);
 							newYB += (hsb[2] * yKernel[y+1][x+1]);
 						}
 					}
 					newXB = newXB / 8;
-					newYB = newYB /8;
+					newYB = newYB / 8;
+					
 					
 					float val = (float)Math.sqrt((newXB * newXB)+(newYB * newYB));
+					Color col = Color.getHSBColor(hsb[0], 0, val);
 					
-					int col = (int)(val * 255);
+					int[] tmp = new int[3];
 					
-					rgb[0] = col;
-					rgb[1] = col;
-					rgb[2] = col;
+					tmp[0] = col.getRed();
+					tmp[1] = col.getGreen();
+					tmp[2] = col.getBlue();
 					
-					newImage.setPixel(i,j,rgb);
+					newImage.setPixel(i,j,tmp);
 				}
 			}
 		}
@@ -129,8 +80,7 @@ public class myImage extends CS355Image {
 	public void sharpen() {		
 		float[][] unSharp = {{0,-.5f,0},{-.5f,3,-.5f},{0,-.5f,0}};
 		
-		myImage newImage = new myImage();
-		newImage.setPixels(this);
+		myImage newImage = new myImage(this.getWidth(),this.getHeight());
 		int[] rgb = new int[3];
 		
 		for(int i = 0; i < getWidth(); i++) {
@@ -174,8 +124,7 @@ public class myImage extends CS355Image {
 
 	@Override
 	public void medianBlur() {
-		myImage newImage = new myImage();
-		newImage.setPixels(this);
+		myImage newImage = new myImage(this.getWidth(),this.getHeight());
 		for(int i = 0; i < getWidth(); i++) {
 			for(int j = 0; j < getHeight(); j++) {
 				
@@ -216,8 +165,7 @@ public class myImage extends CS355Image {
 
 	@Override
 	public void uniformBlur() {
-		myImage newImage = new myImage();
-		newImage.setPixels(this);
+		myImage newImage = new myImage(this.getWidth(),this.getHeight());
 		for(int i = 0; i < getWidth(); i++) {
 			for(int j = 0; j < getHeight(); j++) {
 				

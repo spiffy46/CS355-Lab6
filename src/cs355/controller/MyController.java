@@ -514,14 +514,18 @@ public class MyController extends Observable implements CS355Controller{
 
 	@Override
 	public void saveImage(File file) {
-		// TODO Auto-generated method stub
-		
+		image.save(file);
 	}
 
 	@Override
 	public void toggleBackgroundDisplay() {
-		// TODO Auto-generated method stub
-		
+		if(mode == 2){
+			mode = 0;
+		}else {
+			mode = 2;
+		}
+		setChanged();
+		notifyObservers();
 	}
 
 	@Override
